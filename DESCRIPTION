@@ -1,0 +1,13 @@
+Package: basicAffineProcess
+Type: Package
+Title: Basic Affine Processes
+Version: 0.1.0
+Author: Michael Gordy
+Maintainer: Michael Gordy <michaelgordy@yahoo.com>
+Description: Laplace transforms, simulations, and other routines for
+    working with one-dimensional basic affine processes (BAP) and the
+    important CIR special case.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 5.0.1
