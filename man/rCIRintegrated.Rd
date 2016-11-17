@@ -4,12 +4,12 @@
 \alias{rCIRintegrated}
 \title{Draw Y[t] conditional on (X[0],X[t]).}
 \usage{
-rCIRintegrated(X0, Xt, mu, kappa, sigma, timestep, K = 10)
+rCIRintegrated(X0, Xt, mu, kappa, sigma, horizon, K = 10)
 }
 \arguments{
 \item{X0}{Initial condition.}
 
-\item{Xt}{Final value at timestep.}
+\item{Xt}{Final value at horizon.}
 
 \item{mu}{Drift of process.}
 
@@ -17,7 +17,7 @@ rCIRintegrated(X0, Xt, mu, kappa, sigma, timestep, K = 10)
 
 \item{sigma}{Volatility of process.}
 
-\item{timestep}{time t}
+\item{horizon}{time t}
 
 \item{K}{number of terms in G-K expansion}
 }

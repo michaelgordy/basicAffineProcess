@@ -4,7 +4,7 @@
 \alias{rBAPtransition}
 \title{Draw from BAP transition density, i.e., X[t] given X[0]}
 \usage{
-rBAPtransition(X0, mu, kappa, sigma, lambda = 0, zeta = 1, timestep)
+rBAPtransition(X0, mu, kappa, sigma, lambda = 0, zeta = 1, horizon)
 }
 \arguments{
 \item{X0}{Initial conditions (scalar).}
@@ -13,7 +13,7 @@ rBAPtransition(X0, mu, kappa, sigma, lambda = 0, zeta = 1, timestep)
 
 \item{zeta}{Mean of jump size distribution.}
 
-\item{timestep}{time t}
+\item{horizon}{time t}
 }
 \value{
 Xt Value of processes at time t.

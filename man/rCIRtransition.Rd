@@ -4,7 +4,7 @@
 \alias{rCIRtransition}
 \title{Draw from CIR transition density}
 \usage{
-rCIRtransition(X0, mu, kappa, sigma, timestep)
+rCIRtransition(X0, mu, kappa, sigma, horizon)
 }
 \arguments{
 \item{X0}{Initial condition.}
@@ -15,7 +15,7 @@ rCIRtransition(X0, mu, kappa, sigma, timestep)
 
 \item{sigma}{Volatility of process.}
 
-\item{timestep}{time t}
+\item{horizon}{time t}
 }
 \value{
 Value Xt of process at time t.

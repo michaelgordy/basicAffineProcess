@@ -4,7 +4,7 @@
 \alias{rCIRtransition2}
 \title{Draw ([X[t],Y[t]) jointly from CIR transition density}
 \usage{
-rCIRtransition2(XY0, mu, kappa, sigma, timestep)
+rCIRtransition2(XY0, mu, kappa, sigma, horizon)
 }
 \arguments{
 \item{XY0}{Initial condition list(X=X0,Y=Y0)}
@@ -15,7 +15,7 @@ rCIRtransition2(XY0, mu, kappa, sigma, timestep)
 
 \item{sigma}{Volatility of process.}
 
-\item{timestep}{time t}
+\item{horizon}{time t}
 }
 \value{
 List (X=Xt,Y=Yt) of process at time t.

@@ -4,7 +4,7 @@
 \alias{rMRCPtransition}
 \title{Draw from MRCP transition density, i.e., X[t] given X[0]}
 \usage{
-rMRCPtransition(X0, mu, kappa, lambda = 0, zeta = 1, timestep)
+rMRCPtransition(X0, mu, kappa, lambda = 0, zeta = 1, horizon)
 }
 \arguments{
 \item{X0}{Initial conditions (scalar).}
@@ -17,10 +17,10 @@ rMRCPtransition(X0, mu, kappa, lambda = 0, zeta = 1, timestep)
 
 \item{zeta}{Mean of jump size distribution.}
 
-\item{timestep}{time t}
+\item{horizon}{time t}
 }
 \value{
-Xlist list containing X[timestep], X[jumptimes-], jump times and sizes.
+Xlist list containing X[horizon], X[jumptimes-], jump times and sizes.
 
 Xt Value of processes at time t.
 }

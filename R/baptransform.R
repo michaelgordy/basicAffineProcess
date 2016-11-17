@@ -45,7 +45,7 @@ laplaceBAP <- function(tt,mu,kappa,sigma,lambda=0,zeta=1,w=-1) {
   } else {
     g1 <- w*(c1+d1*exp(-gma*tt))/gma
     ftt <- (1-exp(-gma*tt))/gma
-    gtt <- (tt-ftt/g1)/kappa
+    gtt <- (tt-ftt/g1)/kappa # relevant only to the case of sigma==0
   }
   # First handle diffusive component
   if (sigma==0) {
@@ -59,7 +59,7 @@ laplaceBAP <- function(tt,mu,kappa,sigma,lambda=0,zeta=1,w=-1) {
   B1 <- (1+B0*d1)*w*exp(-gma*tt)/g1
   if (lambda>0) {
     h2overjs <- 1/(w*(c1-zeta)*(d1+zeta))  # h2/zeta
-    g2 <- g1-w*zeta*ftt
+    g2 <- g1-w*zeta*ftt  # is this correct when sigma==0?
     A0 <- A0 + lambda*zeta*(h2overjs*log(g2)+tt/(c1-zeta))
     A1 <- A1 + w*lambda*zeta*ftt/g2 # because g2dot <- ftt/h2overjs
   }
