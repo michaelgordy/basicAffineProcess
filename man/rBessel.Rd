@@ -2,7 +2,7 @@
 % Please edit documentation in R/bapsim.R
 \name{rBessel}
 \alias{rBessel}
-\title{Draw a Bessel random variable.}
+\title{Draw a Bessel variate.}
 \usage{
 rBessel(nu, z)
 }
@@ -15,6 +15,7 @@ rBessel(nu, z)
 BES(nu,z) random variate
 }
 \description{
-Method on page 285 of G-K
+Discrete Bessel distribution of Yuan and Kalbfleish (2000).
+Method on page 285 of G-K.
 }
 

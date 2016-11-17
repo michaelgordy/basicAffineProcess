@@ -60,3 +60,12 @@ NULL
 .bapGenericDummyFunction <- function(mu,kappa,sigma,lambda,zeta)
   NULL
 
+#' Generic CIR function for inheritance of parameter documentation
+#'
+#' @param mu Drift of process.
+#' @param kappa Mean reversion of process.
+#' @param lambda Jump arrival rate of process.
+#' @param zeta Mean of jump size distribution.
+#' @return NULL
+.mrcpGenericDummyFunction <- function(mu,kappa,lambda,zeta)
+  NULL

@@ -2,9 +2,11 @@
 
 export(laplaceBAP)
 export(laplaceCIR)
-export(laplaceCIRmontecarlo)
 export(rBAPtransition)
+export(rBAPtransition2)
 export(rBessel)
 export(rCIRintegrated)
 export(rCIRstationary)
 export(rCIRtransition)
+export(rMCRPtransition2)
+export(rMRCPtransition)
