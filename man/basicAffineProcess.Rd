@@ -30,15 +30,13 @@ the documentation of this package.
 \section{Laplace transform functions}{
 
 The extended transform is
-\deqn{\psi(t;u,w,X0) = E[\exp(wY[t]+uX[t])| X0]}
+\deqn{\psi(t;u,w,X0) = E[exp(wY[t]+uX[t])| X0]}
 Given a term-structure vector of times tt, the Laplace transform returns
 a list (tt, A0, B0, A1, B1), all vectors of the same length. The returns
 are defined by
 \eqn{\psi(t;0,w,X0)=exp(A0+B0*X0)} and
-\deqn{\psi_u(t;0,w,X0)=exp(A0+B0*X0)(A1+B1*X0)}
-where \eqn{\psi_u} is the partial derivative with respect to u.
-Equivalently, A1 is the time-derivative of A0, and B1 the time-derivative
-of B0.
+\deqn{\psi'(t;0,w,X0)=exp(A0+B0*X0)(A1+B1*X0)}
+where \eqn{\psi'} is the derivative with respect to time.
 }
 
 \section{Simulation functions}{
