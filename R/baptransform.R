@@ -10,6 +10,18 @@
 laplaceCIR <- function(tt,mu,kappa,sigma,w=-1)
    laplaceBAP(tt,mu,kappa,sigma,lambda=0,zeta=1,w)
 
+#' Laplace transform for MRCP process
+#'
+#' Laplace transform of Y[t] and time-derivative of transform.
+#'
+#' @param tt Vector of times.
+#' @inheritParams .mrcpGenericDummyFunction
+#' @param w=-1 Auxiliary parameter in transform.
+#' @return List with (tt, A0, B0, A1, B1), all vectors of equal length.
+#' @export
+laplaceMRCP <- function(tt,mu,kappa,lambda,zeta,w=-1)
+  laplaceBAP(tt,mu,kappa,sigma=0,lambda,zeta,w)
+
 
 #' Laplace transform for BAP
 #'
