@@ -170,7 +170,6 @@ laplaceCIRmontecarlo <- function(X0,tt,mu,kappa,sigma,w=-1,trials=10000) {
 #' @param w=-1 Auxiliary parameter in transform.
 #' @param trials=10000 Number of trials in simulation
 #' @return psi vector of equal length to tt.
-# #' @export
 laplaceBAPmontecarlo <- function(X0,tt,mu,kappa,sigma,lambda=0,zeta=1,w=-1,trials=10000) {
   psi <- rep(0,length(tt))
   dt <- diff(c(0,tt))
@@ -197,7 +196,6 @@ laplaceBAPmontecarlo <- function(X0,tt,mu,kappa,sigma,lambda=0,zeta=1,w=-1,trial
 #' @param trials=10000 Number of trials in simulation
 #' @param ticks=100 Number of ticks in timestep
 #' @return psi vector of equal length to tt.
-# #' @export
 laplaceBAPmontecarlo.trapezoid <- function(X0,timestep,mu,kappa,sigma,lambda=0,zeta=1,w=-1,trials=10000,ticks=100) {
    psi <- replicate(trials,
             exp(w*rBAPtransition2.trapezoid(X0,mu,kappa,sigma,lambda,zeta,timestep,ticks=100)$Y))
@@ -298,7 +296,6 @@ rBAPtransition2 <- function(XY0,mu,kappa,sigma,lambda=0,zeta=1,timestep) {
 #' @param timestep time t
 #' @param ticks=100 is approximate number of knot points in [0,timestep]
 #' @return List (X=Xt,Y=Yt) of process at time t.
-# #' @export
 rBAPtransition2.trapezoid <- function(X0,mu,kappa,sigma,lambda=0,zeta=1,timestep,ticks=100) {
   dtguide <- timestep/ticks  # maximum dt
   # draw jump times
