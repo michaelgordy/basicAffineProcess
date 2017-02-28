@@ -12,6 +12,12 @@ laplaceBAPmontecarlo(X0, tt, mu, kappa, sigma, lambda = 0, zeta = 1,
 
 \item{tt}{Vector of times.}
 
+\item{mu}{Drift of process.}
+
+\item{kappa}{Mean reversion of process.}
+
+\item{sigma}{Volatility of process.}
+
 \item{lambda}{Jump arrival rate of process.}
 
 \item{zeta}{Mean of jump size distribution.}
@@ -26,4 +32,3 @@ psi vector of equal length to tt.
 \description{
 Laplace transform of Y[t]
 }
-

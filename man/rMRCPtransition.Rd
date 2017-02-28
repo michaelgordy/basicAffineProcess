@@ -27,4 +27,3 @@ Xt Value of processes at time t.
 \description{
 Draw from MRCP transition density, i.e., X[t] given X[0]
 }
-

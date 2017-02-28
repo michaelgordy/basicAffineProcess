@@ -28,4 +28,3 @@ If \code{X0} is a vector, return \code{Xt} will be a vector of the
 same length. The vector elements are draw independently. This allows
 us to simulate many independent paths simulataneously.
 }
-

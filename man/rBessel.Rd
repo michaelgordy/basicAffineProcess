@@ -18,4 +18,3 @@ BES(nu,z) random variate
 Discrete Bessel distribution of Yuan and Kalbfleish (2000).
 Method on page 285 of G-K.
 }
-

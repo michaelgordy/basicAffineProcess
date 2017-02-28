@@ -25,4 +25,3 @@ psi vector of equal length to tt.
 \description{
 Laplace transform of Y[t]
 }
-

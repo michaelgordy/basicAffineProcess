@@ -9,6 +9,12 @@ laplaceBAP(tt, mu, kappa, sigma, lambda = 0, zeta = 1, w = -1)
 \arguments{
 \item{tt}{Vector of times.}
 
+\item{mu}{Drift of process.}
+
+\item{kappa}{Mean reversion of process.}
+
+\item{sigma}{Volatility of process.}
+
 \item{lambda}{Jump arrival rate of process.}
 
 \item{zeta}{Mean of jump size distribution.}
@@ -21,4 +27,3 @@ List with (tt, A0, B0, A1, B1), all vectors of equal length.
 \description{
 Laplace transform of Y[t] and time-derivative of transform.
 }
-

@@ -23,4 +23,3 @@ If \code{n}>1, return will be a vector of length \code{n},
 with vector elements draw independently. This is convenient
 for simulation of many independent paths simulataneously.
 }
-

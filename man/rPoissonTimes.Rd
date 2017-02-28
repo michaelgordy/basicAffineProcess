@@ -17,4 +17,3 @@ Jump times
 \description{
 Final jump time will be beyond horizon.
 }
-

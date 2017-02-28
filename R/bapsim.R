@@ -141,16 +141,41 @@ rCIRintegrated <- function(X0,Xt,mu,kappa,sigma,horizon,K=10) {
 #' @return BES(nu,z) random variate
 #' @export
 rBessel <- function(nu,z) {
+  m <- (sqrt(z^2+nu^2)-nu)/2  # mode
+  if (m<10) {
+    return(rBessel.exact(nu,z))
+  } else {
+    return(rBessel.gaussian(nu,z))
+  }
+}
+
+# For use in rBessel
+rBessel.exact <- function(nu,z) {
   U <- runif(1)
   Fn <- pn <- exp(nu*log(z/2)-lgamma(nu+1)-z)/besselI(z,nu,expon.scaled=T)
   # Fn <- pn <- (z/2)^nu/(gamma(nu+1)*besselI(z,nu))
   n <- 0
   while (U>Fn) {
-    n <- n+1
-    pn <- pn*(z/2)^2/(n*(n+nu))
-    Fn <- Fn + pn
+      n <- n+1
+      pn <- pn*(z/2)^2/(n*(n+nu))
+      Fn <- Fn + pn
   }
   return(n)
+}
+
+# Approximation for use in rBessel
+rBessel.gaussian <- function(nu,z) {
+  U <- runif(1)
+  # Get Bessel quotients
+  I0 <- besselI(z,nu,expon.scaled=T)
+  I1 <- besselI(z,nu+1,expon.scaled=T)
+  I2 <- besselI(z,nu+2,expon.scaled=T)
+  R0 <- I1/I0
+  R1 <- I2/I1
+  mu <- R0*(z/2)
+  sigma <- sqrt(mu - mu^2*(1-R1/R0))
+  X <- mu+sigma*qnorm(U+(1-U)*pnorm(-mu/sigma))
+  return(round(X))
 }
 
 #' Laplace transform for CIR process by simulation

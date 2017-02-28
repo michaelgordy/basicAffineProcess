@@ -27,4 +27,3 @@ Value Yt of process at time t.
 \description{
 Glasserman and Kim FS 2011, Theorem 2.2
 }
-

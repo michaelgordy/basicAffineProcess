@@ -23,4 +23,3 @@ List with (tt, A0, B0, A1, B1), all vectors of equal length.
 \description{
 Laplace transform of Y[t] and time-derivative of transform.
 }
-

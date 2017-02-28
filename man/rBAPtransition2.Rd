@@ -9,6 +9,12 @@ rBAPtransition2(XY0, mu, kappa, sigma, lambda = 0, zeta = 1, horizon)
 \arguments{
 \item{XY0}{Initial condition list(X=X0,Y=Y0)}
 
+\item{mu}{Drift of process.}
+
+\item{kappa}{Mean reversion of process.}
+
+\item{sigma}{Volatility of process.}
+
 \item{lambda}{Jump arrival rate of process.}
 
 \item{zeta}{Mean of jump size distribution.}
@@ -21,4 +27,3 @@ List (X=Xt,Y=Yt) of process at time t.
 \description{
 Draw (X[t],Y[t]) jointly from BAP transition density.
 }
-

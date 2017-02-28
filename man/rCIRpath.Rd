@@ -25,4 +25,3 @@ List of (tt,Xt), each of length ticks+1.
 \description{
 Evenly spaced times points 0,dt,...,horizon, where dt=horizon/ticks.
 }
-

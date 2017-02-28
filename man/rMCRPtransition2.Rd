@@ -25,4 +25,3 @@ List (X=Xt,Y=Yt) of process at time t.
 \description{
 Draw (X[t],Y[t]) jointly from MRCP transition density.
 }
-
