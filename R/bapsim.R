@@ -38,6 +38,7 @@ rCIRtransition <- function(X0,mu,kappa,sigma,horizon) {
 #' @param tt horizon Final time.
 #' @param ticks Number of slices in [0,horizon]
 #' @return List of (tt,Xt), each of length ticks+1.
+#' @export
 rCIRpath <- function(X0,mu,kappa,sigma,horizon,ticks) {
   dt <- horizon/ticks
   Xt <- rep(X0,ticks+1)

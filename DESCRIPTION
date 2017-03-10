@@ -1,13 +1,17 @@
 Package: basicAffineProcess
 Type: Package
 Title: Basic Affine Processes
-Version: 0.1.0
+Version: 0.1.3
 Author: Michael Gordy
 Maintainer: Michael Gordy <michaelgordy@yahoo.com>
 Description: Laplace transforms, simulations, and other routines for
-    working with one-dimensional basic affine processes (BAP) and the
-    important CIR special case.
+    working with one-dimensional basic affine processes (BAP) and two
+    important special cases: the Cox-Ingersoll-Ross (CIR) process and
+    the mean-reverting compound Poisson process.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.0
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

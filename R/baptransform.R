@@ -33,6 +33,7 @@ laplaceMRCP <- function(tt,mu,kappa,lambda,zeta,w=-1)
 #' @return List with (tt, A0, B0, A1, B1), all vectors of equal length.
 #' @export
 laplaceBAP <- function(tt,mu,kappa,sigma,lambda=0,zeta=1,w=-1) {
+  stopifnot(mu>=0,lambda>=0,zeta>=0,w<0)
   # define constants
   gma <- sqrt(kappa^2-2*w*sigma^2)
   c1 <- 0.5*(gma+kappa)/w

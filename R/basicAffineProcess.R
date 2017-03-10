@@ -30,6 +30,9 @@
 #' \deqn{\psi'(t;0,w,X0)=exp(A0+B0*X0)(A1+B1*X0)}
 #' where \eqn{\psi'} is the derivative with respect to time.
 #'
+#' The extended transforms are provided by 
+#' [Duffie (J. of Banking & Finance), 2005, Appendix D.4](http://dx.doi.org/10.1016/j.jbankfin.2005.02.006).
+#'
 #' @section Simulation functions:
 #' The simulation functions ...
 #'

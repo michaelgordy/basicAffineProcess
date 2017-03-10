@@ -1,0 +1,90 @@
+---
+title: "Laplace transforms for limiting cases for CIR parameters"
+author: "Michael B Gordy"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The Laplace transform routine `laplaceBAP()` in this package handles the special case 
+of $\sigma=0$.  Within this special case, $\kappa=0$ must be treated as a special case. (For the general case of $\sigma>0$, $\kappa$ is unrestricted.) In this vignette, we demonstrate that the treatment of these special cases is consistent with the limiting behavior of the standard case. 
+
+First we set our baseline parameters:
+```{r}
+library(basicAffineProcess)
+
+tt <- seq(0,15,by=0.05)
+mu <- 0.25
+kappa1 <- 0.10  # small but not tiny value
+sigma1 <- 0.20  # small but not tiny value
+lambda1 <- 1  # jump rate
+zeta <- 0.5
+w <- -0.5
+X0 <- 0.1
+
+```
+
+Let's examine the behavior as $\sigma\rightarrow 0$ by plot the Laplace transform as a function of time for $\sigma\in\{\sigma_1,\sigma_1/K,0\}$.  We set $K$ so that $\sigma_1/K$ is very small but not miniscule. For now, we eliminate jumps ($\lambda=0$).
+
+```{r fig.width=7, fig.height=5}
+library(ggplot2)
+library(reshape2)
+library(scales)
+
+K <- 5
+
+# Define a function to return a plot of three Laplace transforms. 
+# We will use this function for all the plots in this vignette.
+laplacebysigma <- function(tt,mu,kappa,sigma1,lambda,zeta,w,K,X0) {
+  L1 <- laplaceBAP(tt,mu,kappa1,sigma1,lambda,zeta,w)
+  Le <- laplaceBAP(tt,mu,kappa1,sigma1/K,lambda,zeta,w)  # tiny but positive sigma
+  L0 <- laplaceBAP(tt,mu,kappa1,sigma=0,lambda,zeta,w)
+  # Prepare data for ggplot
+  df <- data.frame(time=L1$tt, L1=exp(L1$A0+L1$B0*X0),
+                    Le=exp(Le$A0+Le$B0*X0), L0=exp(L0$A0+L0$B0*X0))
+  mdf <- melt(df, id.vars="time", value.name="Laplace", variable.name="sigma")
+
+  return(ggplot(mdf, aes(x=time, y=Laplace, color=sigma)) + geom_line() +
+           scale_y_continuous(trans=log_trans()) +
+           scale_color_discrete(name = "sigma",
+                          breaks = c("L1", "Le", "L0"),
+                          labels = c("baseline", "tiny", "zero")))
+}
+
+laplacebysigma(tt,mu,kappa1,sigma1,lambda=0,zeta,w,K,X0)
+
+```
+
+Notice that the line for $\sigma=\sigma_1/K$ is very close to the line for $\sigma=0$,
+as expected.  The $y$-axis is on log-scale to ensure that small differences would be visible even as the transform value shrinks to zero.
+
+Now let's fix $\kappa=0$ and take $\sigma$ to zero as we just did. 
+
+```{r fig.width=7, fig.height=5}
+
+laplacebysigma(tt,mu,kappa=0,sigma1,lambda=0,zeta,w,K,X0)
+
+```
+
+Let's confirm that this works in the presence of jumps as well.  We restore the baseline value of $\kappa=\kappa_1$, and set $\lambda=\lambda_1$.
+
+```{r fig.width=7, fig.height=5}
+
+laplacebysigma(tt,mu,kappa1,sigma1,lambda1,zeta,w,K,X0)
+
+```
+
+Finally, we have the special case of $\kappa=0$ with jumps.
+
+
+```{r fig.width=7, fig.height=5}
+
+laplacebysigma(tt,mu,kappa=0,sigma1,lambda1,zeta,w,K,X0)
+
+```
+
+Everything looks good!
+

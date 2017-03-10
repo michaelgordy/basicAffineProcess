@@ -1,0 +1,74 @@
+---
+title: "Simulate Integrated CIR process"
+author: "Michael B Gordy"
+date: "`r Sys.Date()`"
+bibliography: bibliography.bib
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r generateBibliography, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+require("knitcitations")
+cleanbib()
+options("citation_format" = "pandoc")
+# read.bibtex(file = "bibliography.bib")
+```
+
+
+Let $Y[t]$ denote the integral of a CIR process from time 0 to $t$.  This integral arises frequently in applications to finance.  The function `rCIRintegrated()` samples $Y[t]$ conditional on $X[0]$ and $X[t]$ using the (almost) exact sampling method of @glassermanKim2011. In this vignette, we demonstrate that this routine works well relative to a traditional quadrature method.
+
+Let $H$ denote the time horizon, and $K$ the number of grid points for quadrature. We define a function `rCIRtransition2.trapezoid()` that returns a list $(X[H], Y[H])$ by sampling $X[t]$ at $t=(H/K),2(H/K),\ldots,H$. At each grid point, $Y[t]$ is calculated by the trapezoid approximation.
+
+```{r}
+library(basicAffineProcess)
+rCIRtransition2.trapezoid <- function(X0,mu,kappa,sigma,horizon,K) {
+  xpath <- rCIRpath(X0,mu,kappa,sigma,horizon,ticks=K)$Xt
+  XH <- xpath[K+1]
+  YH <- sum(xpath)-(X0+XH)/2
+  return(list(Xt=XH,Yt=YH))
+}
+
+```
+
+We fix our parameter values. 
+
+```{r}
+mu <- 1.75
+kappa <- 0.35
+sigma <- 0.25
+X0 <- 0.64      # for simplicity we fix a starting value for X[0]
+
+horizon <- 1
+K <- 40  
+simtrials <- 500
+
+```
+
+Now let's simulate.  For each trial *i*, we use `rCIRtransition2.trapezoid()` to draw $(X^i[H],Y_{trp}^i[H])$, and then use `rCIRintegrated()` in the package to sample $Y_{gh}^i[H]$ conditional on the $X^i[H]$ just drawn.  Here we use subscripts *trp* to denote the trapezoid algorithm and *gk* to denote Glasserman-Kim.
+
+```{r}
+XH <- YH_gk <- YH_trp <- rep(0,simtrials)
+for (i in 1:simtrials) {
+  pathi <- rCIRtransition2.trapezoid(X0,mu,kappa,sigma,horizon,K)
+  YH_trp[i] <- pathi$Yt
+  XH[i] <- pathi$Xt
+  YH_gk[i] <- rCIRintegrated(X0,XH[i],mu,kappa,sigma,horizon)
+}
+```
+
+If the Glasserman-Kim routine works correctly, then a QQ plot will show that the two samples of $Y[H]$ have the same unconditional distribution.  The dotted line represents the $y=x$ line.
+
+```{r fig.width=7, fig.height=7}
+qqplot(YH_trp,YH_gk, main="Q-Q Plot", xlab='Y[H] by trapezoid rule',ylab='Y[H] by G-K')
+yrange <- c(min(YH_trp),max(YH_trp))
+lines(yrange,yrange,col=4,lty=3)
+```
+
+Not bad!  Recall that the trapezoid rule yields a sampler that is far from an exact, any small discrepancy in the distributions probably should be intepreted in favor of the Glasserman-Kim method.
+
+## References
+
+
