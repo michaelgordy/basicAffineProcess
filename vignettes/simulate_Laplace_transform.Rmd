@@ -1,0 +1,70 @@
+---
+title: "Checking Laplace transforms via simulations"
+author: "Michael B Gordy"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Checking Laplace transforms via simulations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette shows how to verify the analytic solution to the Laplace transform in `laplaceBAP()` via simulation. 
+
+First we set our parameters:
+```{r}
+library(basicAffineProcess)
+
+tt <- seq(0.05,15,by=0.05)
+mu <- 0.25
+kappa <- 0.30  
+sigma <- 0.20  
+lambda <- 0.5  # jump rate
+zeta <- 0.25   # mean jump size
+w <- -0.5
+X0 <- 0.1
+simtrials <- 5000  # number of trials in simulation
+
+```
+
+Next we calculate the Laplace transform analytically and by simulation:
+```{r}
+
+L <- laplaceBAP(tt,mu,kappa,sigma,lambda,zeta,w)
+psi.analytic <- exp(L$A0 + L$B0*X0)
+
+# Laplace transform for BAP process by simulation
+laplaceBAPmontecarlo <- function(X0,tt,mu,kappa,sigma,lambda=0,zeta=1,w=-1,trials) {
+  psi <- rep(0,length(tt))
+  dt <- diff(c(0,tt))
+  for (j in 1:trials) {
+    Yt <- rep(0,length(tt))
+    XY <- list(X=X0,Y=0)
+    for (k in 1:length(tt)) {
+      XY <- rBAPtransition2(XY,mu,kappa,sigma,lambda,zeta,dt[k])
+      Yt[k] <- XY$Y
+    }
+    psi <- psi+exp(w*Yt)
+  }
+  return(psi/trials)
+}
+
+psi.sim <- laplaceBAPmontecarlo(X0,tt,mu,kappa,sigma,lambda,zeta,w,simtrials)
+
+```
+
+Now let's plot the analytical and simulated transforms with log-scaling.  If everything goes well, the two curves will be roughly linear as time increases and very close.
+
+```{r fig.width=7, fig.height=5}
+library(ggplot2)
+library(scales)
+library(tidyr)
+
+data.frame(time=tt, analytic=psi.analytic, simulated=psi.sim) %>%
+         gather(method,Laplace,-time) %>%
+         ggplot(aes(x=time, y=Laplace, color=method)) + geom_line() +
+           scale_y_continuous(trans=log_trans()) 
+```
+
+
+

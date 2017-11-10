@@ -6,21 +6,6 @@
 \usage{
 rBAPtransition(X0, mu, kappa, sigma, lambda = 0, zeta = 1, horizon)
 }
-\arguments{
-\item{X0}{Initial conditions (scalar).}
-
-\item{mu}{Drift of process.}
-
-\item{kappa}{Mean reversion of process.}
-
-\item{sigma}{Volatility of process.}
-
-\item{lambda}{Jump arrival rate of process.}
-
-\item{zeta}{Mean of jump size distribution.}
-
-\item{horizon}{time t}
-}
 \value{
 Xt Value of processes at time t.
 }

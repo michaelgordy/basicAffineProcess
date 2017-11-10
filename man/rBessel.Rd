@@ -15,6 +15,10 @@ rBessel(nu, z)
 BES(nu,z) random variate
 }
 \description{
-Discrete Bessel distribution of Yuan and Kalbfleish (2000).
-Method on page 285 of G-K.
+Discrete Bessel distribution of
+\href{http://dx.doi.org/10.1023/A:1004152916478}{Yuan and Kalbfleish (2000)}.
+Method described by
+\href{http://dx.doi.org/10.1007/s00780-009-0115-y}{Glasserman and Kim (2011, p. 285)},
+but we switch to a Gaussian approximation when the mode of the distribution is large,
+as recommended by Yuan and Kalbfleisch.
 }

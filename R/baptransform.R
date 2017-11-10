@@ -1,3 +1,5 @@
+# baptransform.R in package basicAffineProcess
+
 #' Laplace transform for CIR process
 #'
 #' Laplace transform of Y[t] and time-derivative of transform.

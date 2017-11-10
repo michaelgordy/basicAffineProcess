@@ -27,7 +27,7 @@ library(basicAffineProcess)
 rCIRtransition2.trapezoid <- function(X0,mu,kappa,sigma,horizon,K) {
   xpath <- rCIRpath(X0,mu,kappa,sigma,horizon,ticks=K)$Xt
   XH <- xpath[K+1]
-  YH <- sum(xpath)-(X0+XH)/2
+  YH <- (horizon/K)*(sum(xpath)-(X0+XH)/2)
   return(list(Xt=XH,Yt=YH))
 }
 
@@ -43,7 +43,7 @@ X0 <- 0.64      # for simplicity we fix a starting value for X[0]
 
 horizon <- 1
 K <- 40  
-simtrials <- 500
+simtrials <- 5000
 
 ```
 

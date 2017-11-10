@@ -1,3 +1,5 @@
+# bapsim.R in package basicAffineProcess
+
 #' Draw from CIR transition density
 #'
 #' Draw X[t] given X[0].
@@ -15,7 +17,7 @@ rCIRtransition <- function(X0,mu,kappa,sigma,horizon) {
   ea1 <- exp(-kappa*horizon)
   if (sigma==0) {
     if (kappa==0) {
-      ftt <- tt
+      ftt <- horizon
     } else {
       ftt <- (1-ea1)/kappa
     }
@@ -80,16 +82,17 @@ rCIRstationary <- function(mu,kappa,sigma,n=1) {
 
 #' Draw Y[t] conditional on (X[0],X[t]).
 #'
-#' Glasserman and Kim FS 2011, Theorem 2.2
+#' Algorithm is based on Theorem 2.2 in
+#' \href{http://dx.doi.org/10.1007/s00780-009-0115-y}{Glasserman and Kim (2011)}.
 #'
 #' @param X0 Initial condition.
 #' @param Xt Final value at horizon.
 #' @inheritParams .cirGenericDummyFunction
 #' @param horizon time t
-#' @param K number of terms in G-K expansion
+#' @param GKterms number of terms in Glasserman-Kim expansion
 #' @return Value Yt of process at time t.
 #' @export
-rCIRintegrated <- function(X0,Xt,mu,kappa,sigma,horizon,K=10) {
+rCIRintegrated <- function(X0,Xt,mu,kappa,sigma,horizon,GKterms=10) {
   if (sigma==0) {
     # handle special case of kappa==0
     if (kappa==0) {
@@ -97,45 +100,59 @@ rCIRintegrated <- function(X0,Xt,mu,kappa,sigma,horizon,K=10) {
       gtt <- horizon^2/2
     } else {
       ftt <- (1-exp(-kappa*horizon))/kappa
-      gtt <- (tt-ftt)/kappa
+      gtt <- (horizon-ftt)/kappa
     }
     Yt <- mu*gtt + X0*ftt
   } else {
     # Calculate delta, lambda_n and gamma_n series
-    ktpinsq <- (kappa^2*horizon^2 + 4*pi^2*(1:K)^2)
+    ktpinsq <- (kappa^2*horizon^2 + 4*pi^2*(1:GKterms)^2)
     gmma <- ktpinsq/(2*sigma^2*horizon^2)
-    lmbda <- (4*pi*(1:K))^2/(sigma^2*horizon*ktpinsq)
+    lmbda <- (4*pi*(1:GKterms))^2/(sigma^2*horizon*ktpinsq)
     dlta <- 4*mu/sigma^2
     nu <- dlta/2-1
     z <- sqrt(X0*Xt)*(2*kappa/sigma^2)/sinh(kappa*horizon/2)
     eta <- rBessel(nu,z)
-    gkX1 <- 0
-    for (n in (1:K)) {
-      Nn <- rpois(1,(X0+Xt)*lmbda[n])
-      gkX1 <- gkX1 + sum(rexp(Nn))/gmma[n]
-    }
-    gkX2 <- sum(rgamma(K,dlta/2)/gmma)
+    # gkX1 <- 0
+    Nn <- rpois(GKterms,(X0+Xt)*lmbda)  # vector length GKterms
+    # This calculation covers the X1, X2, X3 terms upto GKterms
+    gkX123 <- sum(rgamma(GKterms, shape = Nn+dlta/2+2*eta)/gmma)
+    # gkX1 <- sum(rgamma(GKterms,shape=Nn)/gmma)
+    # for (n in (1:GKterms)) {
+    #   Nn <- rpois(1,(X0+Xt)*lmbda[n])
+    #   gkX1 <- gkX1 + sum(rexp(Nn))/gmma[n]
+    # }
+    # gkX2 <- sum(rgamma(GKterms,dlta/2)/gmma)
     # gkZ is vector of length eta, each element of which is sum of eta
     # Ga(2,1)/gmma[n] random variables
-    gkZ <- as.vector((1/gmma) %*% matrix(rgamma(eta*K,2),nrow = K))
+    # gkZ <- as.vector((1/gmma) %*% matrix(rgamma(eta*GKterms,2),nrow = GKterms))
+    # gkZ <- sum(rgamma(GKterms,shape=2*eta)/gmma)
     # Now we need to sample the remainder terms as in Lemma 3.1
-    m1 <- 2*(X0+Xt)*horizon/(pi^2*K)
-    scale1 <- (1/3)*(sigma*horizon/(pi*K))^2
-    gkX1 <- gkX1 + rgamma(1,shape=m1/scale1,scale=scale1)
-    m2 <- (dlta/K)*(sigma*horizon/(2*pi))^2
+    m1 <- 2*(X0+Xt)*horizon/(pi^2*GKterms)
+    scale1 <- (1/3)*(sigma*horizon/(pi*GKterms))^2
+    # gkX1 <- gkX1 + rgamma(1,shape=m1/scale1,scale=scale1)
+    m2 <- (dlta/GKterms)*(sigma*horizon/(2*pi))^2
     scaleZ <- scale2 <- 0.5*scale1
-    gkX2 <- gkX2 + rgamma(1,shape=m2/scale2,scale=scale2)
-    mZ <- (1/K)*(sigma*horizon/pi)^2
-    gkZ <- gkZ + rgamma(eta,shape=mZ/scaleZ,scale=scaleZ)
-    Yt <- gkX1+gkX2+sum(gkZ)
+    # gkX2 <- gkX2 + rgamma(1,shape=m2/scale2,scale=scale2)
+    mZ <- (1/GKterms)*(sigma*horizon/pi)^2
+    # gkZ <- gkZ + rgamma(1,shape=eta*mZ/scaleZ,scale=scaleZ)
+    gkResid <- rgamma(3,shape = c(m1/scale1, m2/scale2, eta*mZ/scaleZ),
+                        scale = c(scale1, scale2, scaleZ))
+    # Yt <- gkX1+gkX2+gkZ
+    Yt <- gkX123 + sum(gkResid)
+    if (!is.finite(Yt))
+      Yt <- horizon*(X0+Xt)/2
   }
   return(Yt)
 }
 
 #' Draw a Bessel variate.
 #'
-#' Discrete Bessel distribution of Yuan and Kalbfleish (2000).
-#' Method on page 285 of G-K.
+#' Discrete Bessel distribution of
+#' \href{http://dx.doi.org/10.1023/A:1004152916478}{Yuan and Kalbfleish (2000)}.
+#' Method described by
+#' \href{http://dx.doi.org/10.1007/s00780-009-0115-y}{Glasserman and Kim (2011, p. 285)},
+#' but we switch to a Gaussian approximation when the mode of the distribution is large,
+#' as recommended by Yuan and Kalbfleisch.
 #'
 #' @param nu First parameter of distribution
 #' @param z  Second parameter of distribution
@@ -153,7 +170,7 @@ rBessel <- function(nu,z) {
 # For use in rBessel
 rBessel.exact <- function(nu,z) {
   U <- runif(1)
-  Fn <- pn <- exp(nu*log(z/2)-lgamma(nu+1)-z)/besselI(z,nu,expon.scaled=T)
+  Fn <- pn <- exp(nu*log(z/2)-lgamma(nu+1)-z)/gsl::bessel_Inu_scaled(nu,z)
   # Fn <- pn <- (z/2)^nu/(gamma(nu+1)*besselI(z,nu))
   n <- 0
   while (U>Fn) {
@@ -168,9 +185,9 @@ rBessel.exact <- function(nu,z) {
 rBessel.gaussian <- function(nu,z) {
   U <- runif(1)
   # Get Bessel quotients
-  I0 <- besselI(z,nu,expon.scaled=T)
-  I1 <- besselI(z,nu+1,expon.scaled=T)
-  I2 <- besselI(z,nu+2,expon.scaled=T)
+  I0 <- gsl::bessel_Inu_scaled(nu,z)
+  I1 <- gsl::bessel_Inu_scaled(nu+1,z)
+  I2 <- gsl::bessel_Inu_scaled(nu+2,z)
   R0 <- I1/I0
   R1 <- I2/I1
   mu <- R0*(z/2)
@@ -179,70 +196,17 @@ rBessel.gaussian <- function(nu,z) {
   return(round(X))
 }
 
-#' Laplace transform for CIR process by simulation
-#'
-#' Laplace transform of Y[t]
-#'
-#' @param X0 Initial condition.
-#' @param tt Vector of times.
-#' @inheritParams .cirGenericDummyFunction
-#' @param w=-1 Auxiliary parameter in transform.
-#' @return psi vector of equal length to tt.
-# #' @export
-laplaceCIRmontecarlo <- function(X0,tt,mu,kappa,sigma,w=-1,trials=10000) {
-   psi <- rep(0,length(tt))
-   dt <- diff(c(0,tt))
-   for (j in 1:trials) {
-     Yt <- rep(0,length(tt))
-     XY <- list(X=X0,Y=0)
-     for (k in 1:length(tt)) {
-       XY <- rCIRtransition2(XY,mu,kappa,sigma,dt[k])
-       Yt[k] <- XY$Y
-     }
-     psi <- psi+exp(w*Yt)
-   }
-   return(psi/trials)
-}
 
-#' Laplace transform for BAP process by simulation
-#'
-#' Laplace transform of Y[t]
-#'
-#' @param X0 Initial condition.
-#' @param tt Vector of times.
-#' @inheritParams .bapGenericDummyFunction
-#' @param w=-1 Auxiliary parameter in transform.
-#' @param trials=10000 Number of trials in simulation
-#' @return psi vector of equal length to tt.
-laplaceBAPmontecarlo <- function(X0,tt,mu,kappa,sigma,lambda=0,zeta=1,w=-1,trials=10000) {
-  psi <- rep(0,length(tt))
-  dt <- diff(c(0,tt))
-  for (j in 1:trials) {
-    Yt <- rep(0,length(tt))
-    XY <- list(X=X0,Y=0)
-    for (k in 1:length(tt)) {
-      XY <- rBAPtransition2(XY,mu,kappa,sigma,lambda,zeta,dt[k])
-      Yt[k] <- XY$Y
-    }
-    psi <- psi+exp(w*Yt)
-  }
-  return(psi/trials)
-}
-
-#' Helper function to draw Poisson jump times out to horizon.
-#'
-#' Final jump time will be beyond horizon.
-#'
-#' @param lambda Jump arrival rate of process.
-#' @param horizon time t
-#' @return Jump times
-rPoissonTimes <- function(lambda,horizon) {
+# Helper function to draw Poisson jump times out to horizon.
+# Note that final jump time will be first beyond horizon, so always returns
+# vector of length >= 1.
+rPoissonTimes <- function(lambda, horizon) {
   if (lambda>0) {
     jumptimes <- NULL
     tt <- 0
     while (tt<horizon) {
       tt <- tt+rexp(1,lambda)
-      jumptimes <- c(jumptimes,tt)
+      jumptimes <- c(jumptimes, tt)
     }
   } else {
     jumptimes <- horizon+1
@@ -250,21 +214,17 @@ rPoissonTimes <- function(lambda,horizon) {
   return(jumptimes)
 }
 
-#' Helper function to draw from BAP transition density, i.e., X[t] given X[0]
-#'
-#' @param X0 Initial conditions (scalar).
-#' @inheritParams .bapGenericDummyFunction
-#' @param horizon time t
-#' @return Xlist list containing X[horizon], X[jumptimes-], jump times and sizes.
+# Helper function to draw from BAP transition density, i.e., X[t] given X[0]
+# Returns list containing X[horizon], jump times, X[jumptimes-] and sizes.
 .rBAPdraw <- function(X0,mu,kappa,sigma,lambda,zeta,horizon) {
   # Last element in jumpsizes corresponds to the jump beyond horizon
-  jumptimes <- rPoissonTimes(lambda,horizon)
-  jumpsizes <- c(rexp(length(jumptimes)-1,1/zeta),0)
+  jumptimes <- rPoissonTimes(lambda, horizon)
+  jumpsizes <- c(rexp(length(jumptimes)-1, 1/zeta), 0)
   Xminus <- rep(0,length(jumptimes))
   Xlag <- X0
   jumplag <- 0
   for (j in seq_along(Xminus)) {
-      dt <- min(jumptimes[j],horizon)-jumplag
+      dt <- min(jumptimes[j], horizon)-jumplag
       Xminus[j] <- rCIRtransition(Xlag,mu,kappa,sigma,dt)
       jumplag <- jumptimes[j]
       Xlag <- Xminus[j]+jumpsizes[j]

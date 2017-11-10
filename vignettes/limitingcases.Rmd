@@ -31,8 +31,8 @@ Let's examine the behavior as $\sigma\rightarrow 0$ by plot the Laplace transfor
 
 ```{r fig.width=7, fig.height=5}
 library(ggplot2)
-library(reshape2)
 library(scales)
+library(tidyr)
 
 K <- 5
 
@@ -44,10 +44,10 @@ laplacebysigma <- function(tt,mu,kappa,sigma1,lambda,zeta,w,K,X0) {
   L0 <- laplaceBAP(tt,mu,kappa1,sigma=0,lambda,zeta,w)
   # Prepare data for ggplot
   df <- data.frame(time=L1$tt, L1=exp(L1$A0+L1$B0*X0),
-                    Le=exp(Le$A0+Le$B0*X0), L0=exp(L0$A0+L0$B0*X0))
-  mdf <- melt(df, id.vars="time", value.name="Laplace", variable.name="sigma")
+                    Le=exp(Le$A0+Le$B0*X0), L0=exp(L0$A0+L0$B0*X0)) %>%
+           gather(sigma, Laplace, -time)
 
-  return(ggplot(mdf, aes(x=time, y=Laplace, color=sigma)) + geom_line() +
+  return(ggplot(df, aes(x=time, y=Laplace, color=sigma)) + geom_line() +
            scale_y_continuous(trans=log_trans()) +
            scale_color_discrete(name = "sigma",
                           breaks = c("L1", "Le", "L0"),

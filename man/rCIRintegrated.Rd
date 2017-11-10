@@ -4,7 +4,7 @@
 \alias{rCIRintegrated}
 \title{Draw Y[t] conditional on (X[0],X[t]).}
 \usage{
-rCIRintegrated(X0, Xt, mu, kappa, sigma, horizon, K = 10)
+rCIRintegrated(X0, Xt, mu, kappa, sigma, horizon, GKterms = 10)
 }
 \arguments{
 \item{X0}{Initial condition.}
@@ -19,11 +19,12 @@ rCIRintegrated(X0, Xt, mu, kappa, sigma, horizon, K = 10)
 
 \item{horizon}{time t}
 
-\item{K}{number of terms in G-K expansion}
+\item{GKterms}{number of terms in Glasserman-Kim expansion}
 }
 \value{
 Value Yt of process at time t.
 }
 \description{
-Glasserman and Kim FS 2011, Theorem 2.2
+Algorithm is based on Theorem 2.2 in
+\href{http://dx.doi.org/10.1007/s00780-009-0115-y}{Glasserman and Kim (2011)}.
 }

@@ -1,8 +1,8 @@
 #' basicAffineProcess: A package of tools for the Basic Affine Process.
 #'
 #' The basicAffineProcess package provides Laplace transforms and
-#' random number generators for the basic affine process and its important
-#' special case of the CIR process.
+#' random number generators for the basic affine process and the important
+#' special case of the Cox-Ingersoll-Ross (CIR) process (i.e., square-root diffusion).
 #'
 #' A basic affine process (BAP) follows stochastic differential equation
 #' \deqn{dX[t] = (\mu-\kappa X[t]) dt + \sigma X[t]^{1/2} dW[t] + dJ[t]}
@@ -23,22 +23,18 @@
 #' @section Laplace transform functions:
 #' The extended transform is
 #' \deqn{\psi(t;u,w,X0) = E[exp(wY[t]+uX[t])| X0]}
-#' Given a term-structure vector of times tt, the Laplace transform returns
+#' Given a vector of times tt, the Laplace transform returns
 #' a list (tt, A0, B0, A1, B1), all vectors of the same length. The returns
 #' are defined by
 #' \eqn{\psi(t;0,w,X0)=exp(A0+B0*X0)} and
 #' \deqn{\psi'(t;0,w,X0)=exp(A0+B0*X0)(A1+B1*X0)}
-#' where \eqn{\psi'} is the derivative with respect to time.
-#'
-#' The extended transforms are provided by 
-#' [Duffie (J. of Banking & Finance), 2005, Appendix D.4](http://dx.doi.org/10.1016/j.jbankfin.2005.02.006).
+#' where \eqn{\psi'} is the derivative with respect to time. The extended transforms are provided by
+#' \href{http://dx.doi.org/10.1016/j.jbankfin.2005.02.006}{Duffie (J. of Banking & Finance, 2005, Appendix D.4)}.
 #'
 #' @section Simulation functions:
 #' The simulation functions ...
 #'
-#' @section Cumulants and multi-dimensional functions:
-#' From my paper ...
-#'
+#' @references
 #' @docType package
 #' @name basicAffineProcess
 NULL
